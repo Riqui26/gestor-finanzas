@@ -79,3 +79,4 @@ Ver la BD
 friqu@federico MINGW64 /d/Jarvis/finanzas/backend
 $ mysql -u root -p
 
+git tree

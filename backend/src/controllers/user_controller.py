@@ -1,6 +1,7 @@
 # ====================================================================
 # 🎛️ CONTROLADOR DE USUARIO
 # ====================================================================
+# ! Importamos librerías necesarias
 from src.models.user_model import db, User
 from werkzeug.security import generate_password_hash, check_password_hash
 

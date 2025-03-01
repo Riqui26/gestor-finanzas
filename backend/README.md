@@ -1,51 +1,182 @@
-📦 Descripción por Carpeta
-    📂 src/routes/      Contiene las rutas (endpoints) de la API, organizadas por entidad:
+# 📂 **Estructura Backend - Gestor de Finanzas Personales**
 
-        user_routes.py: Rutas de usuarios (registro, login, perfil).
-        transaction_routes.py: Rutas de transacciones (alta, baja, listado).
-        account_routes.py: Rutas de cuentas (creación, consulta de saldo).
-    
-    📂 src/controllers/     Lógica de negocio y procesamiento de cada entidad. Conectan las rutas con los modelos:
+---
 
-    user_controller.py: Lógica de usuarios.
-    transaction_controller.py: Lógica de transacciones.
-    account_controller.py: Lógica de cuentas.
-    
-    📂 src/models/      Define las estructuras de datos y cómo se almacenan en la base de datos:
+## 📂 backend/
 
-    user_model.py: Modelo de usuario.
-    transaction_model.py: Modelo de transacción.
-    account_model.py: Modelo de cuenta.
-    
-    📂 src/database/        Configuración de la conexión a la base de datos:
+### 📝 Archivos Raíz
 
-    db_mysql.py: Conexión a MySQL y funciones para ejecutar queries.
-    
-    📂 src/services/        Servicios especializados que aportan funcionalidades avanzadas:
+| Archivo | Descripción |
+| --- | --- |
+| `.env` | Variables de entorno (credenciales, configuración). |
+| `.gitignore` | Lo que NO debe subirse al repo (**pycache**, env, etc). |
+| `README.md` | Documentación inicial del proyecto. |
+| `requirements.txt` | Librerías necesarias. |
+| `app.py` | Punto de entrada principal. Inicia Flask y registra las rutas. |
 
-    whatsapp_service.py: Procesa comprobantes de WhatsApp.
-    report_service.py: Genera reportes PDF/Excel.
-    prediction_service.py: Predice gastos futuros.
-    
-    📂 src/utils/       Utilidades y funciones de apoyo:
+---
 
-    helpers.py: Funciones generales (formateo, cálculos, etc.).
-    validators.py: Validaciones (DNI, fechas, montos).
-    
-    📂 src/tests/       Pruebas unitarias y de integración para cada módulo:
+## 📂 config/
 
-    test_users.py
-    test_transactions.py
-    test_accounts.py
-    
-    📄 Archivos raíz
+| Archivo | Descripción |
+| --- | --- |
+| `__init__.py` | Permite que sea un paquete de Python. |
+| `settings.py` | Carga las variables de `.env` y define valores por defecto. Todo lo relacionado a **configuración central**. |
+| `logging_config.py` | Define cómo se crean logs (archivo, consola, formato, nivel: DEBUG, INFO, ERROR, etc). |
 
-    app.py	            Punto de entrada principal que inicializa la app Flask.
-    configuracion.py	Configuración general (DB, entorno, puertos).
-    .env	            Variables de entorno (host, user, password).
-    requirements.txt	Dependencias necesarias.
-    .gitignore	        Archivos/carpetas ignorados en Git.
-    migrations/	        (Opcional) Scripts de migración de la DB.
+---
+
+## 📂 src/
+
+---
+
+### 📂 controllers/
+
+> ❗Capa de controladores
+> 
+> 
+> Aquí es donde se maneja **la lógica de "qué pasa cuando llega una request"**.
+> 
+
+| Archivo | Descripción |
+| --- | --- |
+| `account_controller.py` | Lógica para manejar cuentas (listar, crear, modificar). |
+| `transaction_controller.py` | Maneja transacciones (alta, baja, listado, filtros). |
+| `user_controller.py` | Maneja usuarios (login, registro, cambios de perfil). |
+
+---
+
+### 📂 database/
+
+> ❗Conexión y acceso a la base de datos
+> 
+> 
+> Esta capa **solo** maneja cómo te conectás a la base.
+> 
+
+| Archivo | Descripción |
+| --- | --- |
+| `db_mysql.py` | Conexión directa a MySQL (usa `pymysql` o `mysql-connector`). |
+| `__init__.py` | Inicializa el paquete. Puede tener código común de conexión. |
+
+---
+
+### 📂 models/
+
+> ❗Capa de modelos
+> 
+> 
+> Define cómo son las entidades (User, Transaction, Account).
+> 
+> Los modelos incluyen:
+> 
+- **Definición de atributos**.
+- **Funciones CRUD específicas (querys directas)**.
+
+| Archivo | Descripción |
+| --- | --- |
+| `account_model.py` | Modelo de Cuenta (id, nombre, tipo, saldo). |
+| `transaction_model.py` | Modelo de Transacción (monto, fecha, cuenta, categoría). |
+| `user_model.py` | Modelo de Usuario (nombre, email, clave hash). |
+
+---
+
+### 📂 routes/
+
+> ❗Capa de rutas
+> 
+> 
+> Aquí es donde se define **la URL y el método HTTP**.
+> 
+> Por ejemplo:
+> 
+> `@app.route('/accounts', methods=['GET'])`
+> 
+> La ruta llama al **controller**, y el controller hace lo demás.
+> 
+
+| Archivo | Descripción |
+| --- | --- |
+| `account_routes.py` | Define rutas de cuentas. |
+| `transaction_routes.py` | Define rutas de transacciones. |
+| `user_routes.py` | Define rutas de usuarios. |
+
+---
+
+### 📂 services/
+
+> ❗Capa de servicios
+> 
+> 
+> Aquí va la lógica de negocio real, por ejemplo:
+> 
+- ¿Cómo calculás un saldo total?
+- ¿Cómo predecís un gasto futuro?
+- ¿Cómo generás un PDF o Excel?
+
+| Archivo | Descripción |
+| --- | --- |
+| `account_service.py` | Procesa reglas sobre cuentas. |
+| `transaction_service.py` | Procesa reglas sobre transacciones. |
+| `user_service.py` | Maneja lógica de usuario (validar login, etc). |
+| 📂 `predictions/` | Cosas de IA/predicciones. |
+| 📂 `reports/` | Generadores de PDFs y Excel. |
+| 📂 `integrations/` | Conexiones a APIs externas como WhatsApp. |
+
+---
+
+### 📂 tests/
+
+> ❗Capa de tests
+> 
+> 
+> Acá van tus pruebas unitarias e integrales.
+> 
+
+| Archivo | Descripción |
+| --- | --- |
+| `test_accounts.py` | Tests para cuentas. |
+| `test_transactions.py` | Tests para transacciones. |
+| `test_users.py` | Tests para usuarios. |
+
+---
+
+### 📂 utils/
+
+> ❗Utilidades generales
+> 
+> 
+> Funcionalidades de soporte que pueden ser usadas en todo el proyecto.
+> 
+> Ejemplos:
+> 
+- Validadores (emails, fechas).
+- Funciones repetidas (formatear fechas, convertir monedas).
+- Manejo de errores custom.
+
+| Archivo | Descripción |
+| --- | --- |
+| `helpers.py` | Funciones generales y utilitarias. |
+| `validators.py` | Validaciones (email válido, monto positivo, etc). |
+| `exceptions.py` | Errores personalizados (UserNotFound, InvalidTransaction). |
+
+---
+
+### 📂 Integrations (ex whatsapp)
+
+> ❗Conexiones a servicios externos
+> 
+> 
+> Ahora está dentro de `services/integrations/`, y sirve para centralizar la interacción con:
+> 
+- WhatsApp.
+- Bancos.
+- Otras APIs.
+
+| Archivo | Descripción |
+| --- | --- |
+| `whatsapp_api.py` | Manda y recibe mensajes desde WhatsApp. |
+| `whatsapp_parser.py` | Analiza textos de comprobantes (leer montos, fechas). |
 
 
 
@@ -66,7 +197,7 @@ pip install Flask Flask-SQLAlchemy Flask-Migrate Flask-Cors Flask-Login Flask-En
 Listar dependencias instaladas
 pip list
 
-Ejecucion
+EJECUCION ######################
 python app.py
 
 Para probar la conexión

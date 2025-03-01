@@ -1,67 +1,59 @@
 # ====================================================================
-# 🌐 RUTAS DE USUARIO
+# 📌 RUTAS DE USUARIO - Flask Blueprint
 # ====================================================================
-
+# ! Importamos librerías necesarias
 from flask import Blueprint, request, jsonify
-from src.controllers.user_controller import (
-    create_user,
-    get_user_by_id,
-    get_all_users,
-    update_user,
-    delete_user
-)
+from src.controllers.user_controller import create_user, get_all_users, get_user_by_id, update_user, delete_user
 
-user_bp = Blueprint('user_bp', __name__)
+# ? Creamos un Blueprint para las rutas de usuario
+user_bp = Blueprint("user_bp", __name__)
 
-# ==============================================================
-# 📋 GET - Obtener todos los usuarios
-# Ruta: /api/users
-# ==============================================================
-@user_bp.route('/', methods=['GET'])
-def get_users():
+# ============================================================== 
+# 🆕 Crear un nuevo usuario (POST)
+# ============================================================== 
+@user_bp.route("/", methods=["POST"])
+def create_user_route():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Datos inválidos"}), 400
+    user = create_user(data)
+    return jsonify(user), 201
+
+# ============================================================== 
+# 📋 Obtener todos los usuarios (GET)
+# ============================================================== 
+@user_bp.route("/", methods=["GET"])
+def get_all_users_route():
     users = get_all_users()
-    return jsonify(users)
+    return jsonify(users), 200
 
-# ==============================================================
-# 🔎 GET - Obtener un usuario específico por ID
-# Ruta: /api/users/<user_id>
-# ==============================================================
-@user_bp.route('/<int:user_id>', methods=['GET'])
-def get_user(user_id):
+# ============================================================== 
+# 🔎 Obtener un usuario por ID (GET)
+# ============================================================== 
+@user_bp.route("/<int:user_id>", methods=["GET"])
+def get_user_by_id_route(user_id):
     user = get_user_by_id(user_id)
     if not user:
         return jsonify({"error": "Usuario no encontrado"}), 404
-    return jsonify(user)
+    return jsonify(user), 200
 
-# ==============================================================
-# 🆕 POST - Crear un nuevo usuario
-# Ruta: /api/users
-# ==============================================================
-@user_bp.route('/', methods=['POST'])
-def create_new_user():
-    data = request.json
-    nuevo_usuario = create_user(data)
-    return jsonify(nuevo_usuario), 201
-
-# ==============================================================
-# ✏️ PUT - Actualizar un usuario existente
-# Ruta: /api/users/<user_id>
-# ==============================================================
-@user_bp.route('/<int:user_id>', methods=['PUT'])
-def update_existing_user(user_id):
-    data = request.json
+# ============================================================== 
+# ✏️ Actualizar usuario (PUT)
+# ============================================================== 
+@user_bp.route("/<int:user_id>", methods=["PUT"])
+def update_user_route(user_id):
+    data = request.get_json()
     user = update_user(user_id, data)
     if not user:
         return jsonify({"error": "Usuario no encontrado"}), 404
-    return jsonify(user)
+    return jsonify(user), 200
 
-# ==============================================================
-# ❌ DELETE - Eliminar un usuario
-# Ruta: /api/users/<user_id>
-# ==============================================================
-@user_bp.route('/<int:user_id>', methods=['DELETE'])
-def delete_existing_user(user_id):
+# ============================================================== 
+# ❌ Eliminar usuario (DELETE)
+# ============================================================== 
+@user_bp.route("/<int:user_id>", methods=["DELETE"])
+def delete_user_route(user_id):
     result = delete_user(user_id)
     if not result:
         return jsonify({"error": "Usuario no encontrado"}), 404
-    return jsonify(result)
+    return jsonify(result), 200

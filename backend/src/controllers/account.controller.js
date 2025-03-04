@@ -1,55 +1,69 @@
 //###################################################
-// 💰 Controlador de Cuentas
+// 💳 Controlador de Cuentas
 //###################################################
-const Account = require("../models/account.model");
 
-//* ✅ Obtener todas las cuentas
-exports.getAccounts = async (req, res) => {
+const Account = require("../models/account.model"); // ✅ Importar el modelo
+
+// * Obtener todas las cuentas
+const getAccounts = async (req, res, next) => {
   try {
-    const accounts = await Account.find({ user: req.user.id });
+    const accounts = await Account.find({ owner: req.user.id });
     res.json(accounts);
   } catch (error) {
-    res.status(500).json({ msg: "Error en el servidor", error });
+    next(error); // ✅ Enviar error al middleware de errores
   }
 };
 
-//* ✅ Crear cuenta
-exports.createAccount = async (req, res) => {
+// * Crear una nueva cuenta
+const createAccount = async (req, res, next) => {
   try {
-    const newAccount = new Account({ ...req.body, user: req.user.id });
+    const { name, type, currency } = req.body;
+    const newAccount = new Account({ name, type, currency, owner: req.user.id });
     await newAccount.save();
     res.status(201).json(newAccount);
   } catch (error) {
-    res.status(500).json({ msg: "Error en el servidor", error });
+    next(error);
   }
 };
 
-//* ✅ Obtener cuenta por ID
-exports.getAccountById = async (req, res) => {
+// * Obtener una cuenta por ID
+const getAccountById = async (req, res, next) => {
   try {
     const account = await Account.findById(req.params.id);
+    if (!account) return res.status(404).json({ error: "Cuenta no encontrada" });
     res.json(account);
   } catch (error) {
-    res.status(500).json({ msg: "Error en el servidor", error });
+    next(error);
   }
 };
 
-//* ✅ Actualizar cuenta
-exports.updateAccount = async (req, res) => {
+// * Actualizar una cuenta
+const updateAccount = async (req, res, next) => {
   try {
     const updatedAccount = await Account.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedAccount) return res.status(404).json({ error: "Cuenta no encontrada" });
     res.json(updatedAccount);
   } catch (error) {
-    res.status(500).json({ msg: "Error en el servidor", error });
+    next(error);
   }
 };
 
-//* ✅ Eliminar cuenta
-exports.deleteAccount = async (req, res) => {
+// * Eliminar una cuenta
+const deleteAccount = async (req, res, next) => {
   try {
-    await Account.findByIdAndDelete(req.params.id);
-    res.json({ msg: "Cuenta eliminada" });
+    const deletedAccount = await Account.findByIdAndDelete(req.params.id);
+    if (!deletedAccount) return res.status(404).json({ error: "Cuenta no encontrada" });
+    res.json({ message: "Cuenta eliminada correctamente" });
   } catch (error) {
-    res.status(500).json({ msg: "Error en el servidor", error });
+    next(error);
   }
+};
+
+// ✅ Exportar controladores
+module.exports = {
+  getAccounts,
+  createAccount,
+  getAccountById,
+  updateAccount,
+  deleteAccount,
 };

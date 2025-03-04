@@ -1,5 +1,5 @@
 //###################################################
-// ✅ Middleware de Validación (validate.middleware.js)
+// ✅ Middleware de Validación
 //###################################################
 
 const Joi = require("joi"); // ! 📦 Librería para validación de esquemas

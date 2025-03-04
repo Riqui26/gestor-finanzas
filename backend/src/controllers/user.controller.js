@@ -1,80 +1,47 @@
 //###################################################
-// 🎮 Controlador de Usuarios
+// 👤 Controlador de Usuarios
 //###################################################
 
-const User = require("../models/user.model");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const User = require("../models/user.model"); // ! Importa el modelo de usuario
 
-// ! Registro de usuario con Autologin
-exports.registerUser = async (req, res) => {
-  try {
-    const { name, email, password } = req.body;
-
-    // ? Verificar si el usuario ya existe
-    const userExists = await User.findOne({ email });
-    if (userExists) return res.status(400).json({ msg: "El usuario ya existe" });
-
-    // * Crear nuevo usuario
-    const newUser = new User({ name, email, password });
-    await newUser.save();
-
-    // ? Generar Token JWT automáticamente al registrarse (Autologin)
-    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    res.status(201).json({
-      msg: "Usuario registrado exitosamente",
-      token, // ✅ Token devuelto directo
-      user: { id: newUser._id, name: newUser.name, email: newUser.email },
-    });
-
-  } catch (error) {
-    res.status(500).json({ msg: "Error en el servidor", error });
-  }
-};
-
-// ! Inicio de sesión
-exports.loginUser = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // ? Buscar usuario por email
-    const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ msg: "Usuario no encontrado" });
-
-    // * Comparar contraseñas
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ msg: "Contraseña incorrecta" });
-
-    // ? Generar Token JWT
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-
-    res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
-  } catch (error) {
-    res.status(500).json({ msg: "Error en el servidor", error });
-  }
-};
-
-// ! Obtener todos los usuarios
-exports.getUsers = async (req, res) => {
-  try {
-    const users = await User.find().select("-password"); // * Excluye la contraseña
+// * Obtener todos los usuarios
+const getAllUsers = async (req, res) => {
+    const users = await User.find();
     res.json(users);
-  } catch (error) {
-    res.status(500).json({ msg: "Error en el servidor", error });
-  }
 };
 
-// ! Eliminar un usuario
-exports.deleteUser = async (req, res) => {
-  try {
+// * Obtener un usuario por ID
+const getUserById = async (req, res) => {
+    const user = await User.findById(req.params.id);
+    res.json(user);
+};
+
+// * Crear un nuevo usuario
+const createUser = async (req, res) => {
+    const newUser = new User(req.body);
+    await newUser.save();
+    res.status(201).json(newUser);
+};
+
+// * Actualizar un usuario
+const updateUser = async (req, res) => {
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(updatedUser);
+};
+
+// * Eliminar un usuario
+const deleteUser = async (req, res) => {
     await User.findByIdAndDelete(req.params.id);
-    res.json({ msg: "Usuario eliminado" });
-  } catch (error) {
-    res.status(500).json({ msg: "Error en el servidor", error });
-  }
+    res.status(204).send();
+};
+
+//###################################################
+// 📤 Exportar funciones del controlador
+//###################################################
+module.exports = {
+    getAllUsers,
+    getUserById,
+    createUser,
+    updateUser,
+    deleteUser
 };

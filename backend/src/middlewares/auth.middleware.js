@@ -1,21 +1,17 @@
 //###################################################
 // 🔐 Middleware de Autenticación
 //###################################################
-
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
 
-// ? Verifica si el usuario está autenticado
-exports.verifyToken = (req, res, next) => {
-  const token = req.header("Authorization");
-  if (!token) {
-    return res.status(401).json({ msg: "Acceso denegado. No hay token." });
-  }
+module.exports = (req, res, next) => {
+  const token = req.header("x-auth-token");
+  if (!token) return res.status(401).json({ msg: "⚠️ Sin token, acceso denegado" });
+
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
+    req.user = decoded.user;
     next();
-  } catch (error) {
-    res.status(400).json({ msg: "Token inválido." });
+  } catch (err) {
+    res.status(401).json({ msg: "⚠️ Token no válido" });
   }
 };

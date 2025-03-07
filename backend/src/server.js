@@ -4,6 +4,7 @@
 
 const express = require("express");
 const connectDB = require("./config/database");
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.use("/api/accounts", require("./routes/accountRoutes"));
 app.use("/api/transactions", require("./routes/transactionRoutes"));
 app.use("/api/goals", require("./routes/goalRoutes"));
 app.use("/api/alerts", require("./routes/alertRoutes"));
+app.use("/api/auth", authRoutes);
 
 // Iniciar servidor
 const PORT = process.env.PORT || 5000;

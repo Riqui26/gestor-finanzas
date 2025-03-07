@@ -4,16 +4,6 @@
 
 const transactionService = require("../services/transactionService");
 
-// ! Obtener todas las transacciones de un usuario
-const getTransactions = async (req, res) => {
-  try {
-    const transactions = await transactionService.getUserTransactions(req.user.id);
-    res.json(transactions);
-  } catch (error) {
-    res.status(500).json({ message: "Error obteniendo transacciones." });
-  }
-};
-
 // ! Crear una nueva transacción
 const createTransaction = async (req, res) => {
   try {
@@ -24,7 +14,17 @@ const createTransaction = async (req, res) => {
   }
 };
 
-// Obtener todas las transacciones de una cuenta específica
+// ! Obtener todas las transacciones de un usuario
+const getTransactions = async (req, res) => {
+  try {
+    const transactions = await transactionService.getUserTransactions(req.user.id);
+    res.json(transactions);
+  } catch (error) {
+    res.status(500).json({ message: "Error obteniendo transacciones." });
+  }
+};
+
+// ! Obtener todas las transacciones de una cuenta específica
 const getTransactionsByAccount = async (req, res) => {
   try {
       const transactions = await transactionService.getTransactionsByAccount(req.params.accountId);

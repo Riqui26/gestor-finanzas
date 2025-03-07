@@ -1,12 +1,10 @@
 //###################################################
-// 📋 Middleware de Autenticación
+// 🔐 Middleware de Autenticación
 //###################################################
 
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
 
-// ! Middleware para verificar si el usuario está autenticado
-const verifyToken = (req, res, next) => {
+const authMiddleware = (req, res, next) => {
   const token = req.header("Authorization");
 
   if (!token) {
@@ -14,13 +12,12 @@ const verifyToken = (req, res, next) => {
   }
 
   try {
-    // * Verifica el token con la clave secreta
-    const verified = jwt.verify(token.replace("Bearer ", ""), process.env.JWT_SECRET);
-    req.user = verified; // Guarda la info del usuario en la request
+    const decoded = jwt.verify(token.replace("Bearer ", ""), process.env.JWT_SECRET);
+    req.user = decoded; // 🔥 Se asigna el usuario a req.user
     next();
   } catch (error) {
-    return res.status(400).json({ message: "Token inválido." });
+    res.status(401).json({ message: "Token inválido." });
   }
 };
 
-module.exports = verifyToken;
+module.exports = authMiddleware;

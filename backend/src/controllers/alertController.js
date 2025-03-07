@@ -4,16 +4,6 @@
 
 const alertService = require("../services/alertService");
 
-// ! Obtener alertas de un usuario
-const getAlerts = async (req, res) => {
-  try {
-    const alerts = await alertService.getUserAlerts(req.user.id);
-    res.json(alerts);
-  } catch (error) {
-    res.status(500).json({ message: "Error obteniendo alertas." });
-  }
-};
-
 // ! Crear una nueva alerta
 const createAlert = async (req, res) => {
   try {
@@ -24,14 +14,13 @@ const createAlert = async (req, res) => {
   }
 };
 
-// ! Eliminar una alerta por ID
-const deleteAlert = async (req, res) => {
+// ! Obtener alertas de un usuario
+const getAlerts = async (req, res) => {
   try {
-    const alertId = req.params.id;
-    await alertService.deleteAlert(alertId);
-    res.status(200).json({ message: "Alerta eliminada correctamente." });
+    const alerts = await alertService.getUserAlerts(req.user.id);
+    res.json(alerts);
   } catch (error) {
-    res.status(500).json({ message: "Error eliminando la alerta." });
+    res.status(500).json({ message: "Error obteniendo alertas." });
   }
 };
 
@@ -45,6 +34,17 @@ const updateAlert = async (req, res) => {
       res.json(updatedAlert);
   } catch (error) {
       res.status(500).json({ message: "Error al actualizar la alerta" });
+  }
+};
+
+// ! Eliminar una alerta por ID
+const deleteAlert = async (req, res) => {
+  try {
+    const alertId = req.params.id;
+    await alertService.deleteAlert(alertId);
+    res.status(200).json({ message: "Alerta eliminada correctamente." });
+  } catch (error) {
+    res.status(500).json({ message: "Error eliminando la alerta." });
   }
 };
 

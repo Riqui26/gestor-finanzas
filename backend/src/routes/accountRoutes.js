@@ -5,20 +5,21 @@
 const express = require("express");
 const router = express.Router();
 const accountController = require("../controllers/accountController");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 // * Crear una nueva cuenta
-router.post("/", accountController.createAccount);
+router.post("/", authMiddleware, accountController.createAccount);
 
-// ? Obtener todas las cuentas de un usuario
-router.get("/user/:userId", accountController.getAccounts);
+// ? Obtener todas las cuentas del usuario autenticado
+router.get("/", authMiddleware, accountController.getAccounts);
 
 // ? Obtener una cuenta por ID
-router.get("/:id", accountController.getAccountById);
+router.get("/:id", authMiddleware, accountController.getAccountById);
 
 // ? Actualizar saldo o información de la cuenta
-router.put("/:id", accountController.updateAccount);
+router.put("/:id", authMiddleware, accountController.updateAccount);
 
 // ! Eliminar una cuenta
-router.delete("/:id", accountController.deleteAccount);
+router.delete("/:id", authMiddleware, accountController.deleteAccount);
 
 module.exports = router;

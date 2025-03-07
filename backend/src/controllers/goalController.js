@@ -4,16 +4,6 @@
 
 const goalService = require("../services/goalService");
 
-// ! Obtener los objetivos de un usuario
-const getGoals = async (req, res) => {
-  try {
-    const goals = await goalService.getUserGoals(req.user.id);
-    res.json(goals);
-  } catch (error) {
-    res.status(500).json({ message: "Error obteniendo objetivos." });
-  }
-};
-
 // ! Crear un nuevo objetivo de ahorro
 const createGoal = async (req, res) => {
   try {
@@ -24,14 +14,13 @@ const createGoal = async (req, res) => {
   }
 };
 
-// ! Eliminar un objetivo por ID
-const deleteGoal = async (req, res) => {
+// ! Obtener los objetivos de un usuario
+const getGoals = async (req, res) => {
   try {
-    const goalId = req.params.id;
-    await goalService.deleteGoal(goalId);
-    res.status(200).json({ message: "Objetivo eliminado correctamente." });
+    const goals = await goalService.getUserGoals(req.user.id);
+    res.json(goals);
   } catch (error) {
-    res.status(500).json({ message: "Error eliminando el objetivo." });
+    res.status(500).json({ message: "Error obteniendo objetivos." });
   }
 };
 
@@ -45,6 +34,17 @@ const updateGoal = async (req, res) => {
       res.json(updatedGoal);
   } catch (error) {
       res.status(500).json({ message: "Error al actualizar el objetivo" });
+  }
+};
+
+// ! Eliminar un objetivo por ID
+const deleteGoal = async (req, res) => {
+  try {
+    const goalId = req.params.id;
+    await goalService.deleteGoal(goalId);
+    res.status(200).json({ message: "Objetivo eliminado correctamente." });
+  } catch (error) {
+    res.status(500).json({ message: "Error eliminando el objetivo." });
   }
 };
 

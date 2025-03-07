@@ -10,10 +10,11 @@ const cors = require('cors');
 
 // Importar rutas
 const userRoutes = require('./routes/userRoutes');
-const accountRoutes = require('./routes/accountRoutes');
 const alertRoutes = require('./routes/alertRoutes');
+const accountRoutes = require('./routes/accountRoutes');
 const goalRoutes = require('./routes/goalRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
+const authRoutes = require("./routes/authRoutes");
 
 // Configurar dotenv para las variables de entorno
 dotenv.config();
@@ -36,16 +37,17 @@ app.use('/api/accounts', accountRoutes);    // Rutas de cuentas
 app.use('/api/alerts', alertRoutes);        // Rutas de alertas
 app.use('/api/goals', goalRoutes);          // Rutas de objetivos
 app.use('/api/transactions', transactionRoutes);  // Rutas de transacciones
+app.use("/api/auth", authRoutes); // Rutas de autenticación
 
 // Ruta de inicio (opcional, puedes personalizarla)
 app.get('/', (req, res) => {
-  res.send('Bienvenido al gestor de finanzas personales!');
+  res.send('🏛️ Bienvenido al gestor de finanzas personales! 💲');
 });
 
 // Puerto del servidor
 const PORT = process.env.PORT || 5000;
 
-// Iniciar el servidor
+// * Iniciar el servidor
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });

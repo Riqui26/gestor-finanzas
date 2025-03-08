@@ -4,14 +4,14 @@
 
 const Goal = require("../models/Goal");
 
-// ? Obtener todos los objetivos
-const getGoals = async () => {
-  return await Goal.find();
+// ? Obtener todos los objetivos de un usuario
+const getUserGoals = async (userId) => {
+  return await Goal.find({ user: userId }); // ✅ Filtrar por usuario
 };
 
 // ? Crear un nuevo objetivo
-const createGoal = async (goalData) => {
-  const newGoal = new Goal(goalData);
+const createGoal = async (goalData, userId) => {
+  const newGoal = new Goal({ ...goalData, user: userId }); // ✅ Asignar usuario correctamente
   return await newGoal.save();
 };
 
@@ -25,4 +25,4 @@ const updateGoal = async (goalId, updateData) => {
   return await Goal.findByIdAndUpdate(goalId, updateData, { new: true });
 };
 
-module.exports = { getGoals, createGoal, deleteGoal, updateGoal };
+module.exports = { getUserGoals, createGoal, deleteGoal, updateGoal };

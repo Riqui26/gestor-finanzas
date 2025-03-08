@@ -30,4 +30,9 @@ const updateAccount = async (accountId, updateData) => {
   return await Account.findByIdAndUpdate(accountId, updateData, { new: true });
 };
 
-module.exports = { getAccounts, createAccount, deleteAccount, getAccountById, updateAccount };
+// ? Obtener todas las cuentas de un usuario específico
+const getUserAccounts = async (userId) => {
+  return await Account.find({ user: userId });
+};
+
+module.exports = { getAccounts, createAccount, deleteAccount, getAccountById, updateAccount, getUserAccounts };

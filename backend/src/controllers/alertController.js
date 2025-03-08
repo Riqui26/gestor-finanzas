@@ -7,6 +7,9 @@ const alertService = require("../services/alertService");
 // ! Crear una nueva alerta
 const createAlert = async (req, res) => {
   try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: "Usuario no autenticado." });
+    }
     const alert = await alertService.createAlert(req.body, req.user.id);
     res.status(201).json(alert);
   } catch (error) {
@@ -14,10 +17,15 @@ const createAlert = async (req, res) => {
   }
 };
 
+
 // ! Obtener alertas de un usuario
 const getAlerts = async (req, res) => {
   try {
-    const alerts = await alertService.getUserAlerts(req.user.id);
+    const { userId } = req.params;
+    const alerts = await alertService.getUserAlerts(userId);
+    if (!alerts || alerts.length === 0) {
+      return res.status(404).json({ message: "No se encontraron alertas para este usuario." });
+    }
     res.json(alerts);
   } catch (error) {
     res.status(500).json({ message: "Error obteniendo alertas." });

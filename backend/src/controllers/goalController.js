@@ -1,13 +1,13 @@
 //###################################################
 // 🏆 Servicio de Objetivos de Ahorro
 //###################################################
-
 const goalService = require("../services/goalService");
 
 // ! Crear un nuevo objetivo de ahorro
 const createGoal = async (req, res) => {
   try {
-    const goal = await goalService.createGoal(req.body, req.user.id);
+    console.log(req.user); // ✅ Verificar si el usuario está presente
+    const goal = await goalService.createGoal(req.body, req.user._id);
     res.status(201).json(goal);
   } catch (error) {
     res.status(400).json({ message: error.message });
@@ -17,7 +17,8 @@ const createGoal = async (req, res) => {
 // ! Obtener los objetivos de un usuario
 const getGoals = async (req, res) => {
   try {
-    const goals = await goalService.getUserGoals(req.user.id);
+    console.log(req.user); // ✅ Depuración
+    const goals = await goalService.getUserGoals(req.user._id);
     res.json(goals);
   } catch (error) {
     res.status(500).json({ message: "Error obteniendo objetivos." });
